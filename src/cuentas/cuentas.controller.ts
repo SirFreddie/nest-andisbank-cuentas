@@ -1,6 +1,7 @@
 import { Controller, Get, Post, Body, Param } from '@nestjs/common';
 import { CuentasService } from './cuentas.service';
 import { CreateTransferenciaDto } from './dto/create-transferencia.dto';
+import { ApiBody } from '@nestjs/swagger';
 
 @Controller('cuentas')
 export class CuentasController {
@@ -23,6 +24,7 @@ export class CuentasController {
   }
 
   // TODO: EN EL BODY VA CUENTA ORIGEN, CUENTA DESTINO, MONTO.
+  @ApiBody({ type: [CreateTransferenciaDto] })
   @Post('transferir/propia')
   transferirPropia(@Body() createTransferenciaDto: CreateTransferenciaDto) {
     // TODO: TRANSFERIR ENTRE CUENTAS PROPIAS
@@ -30,12 +32,14 @@ export class CuentasController {
   }
 
   // TODO: EN EL BODY VA CUENTA ORIGEN, CUENTA DESTINO, MONTO.
+  @ApiBody({ type: [CreateTransferenciaDto] })
   @Post('transferir/terceros')
   transferirTerceros(@Body() createTransferenciaDto: CreateTransferenciaDto) {
     return this.cuentasService.transferirTerceros(createTransferenciaDto);
   }
 
   // TODO: EN EL BODY VA CUENTA ORIGEN, CUENTA DESTINO, MONTO, BANCO DESTINO.
+  @ApiBody({ type: [CreateTransferenciaDto] })
   @Post('transferir/externas')
   transferirExternos(@Body() createTransferenciaDto: CreateTransferenciaDto) {
     // TODO: TRANSFERIR ENTRE CUENTAS EXTERNAS
