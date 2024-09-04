@@ -1,4 +1,8 @@
-import { Injectable } from '@nestjs/common';
+import {
+  ImATeapotException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { CreateTransferenciaDto } from './dto/create-transferencia.dto';
 import { CUENTAS_ANDISBANK } from 'src/data/cuentas.mock';
 import { CUENTAS_BANCOS_EXTERNOS } from 'src/data/cuentas-otros';
@@ -9,11 +13,22 @@ export class CuentasService {
   cuentasExternas: any = CUENTAS_BANCOS_EXTERNOS;
 
   findOne(id: number) {
-    return this.cuentas.find((cuenta) => cuenta.id === id);
+    const cuenta = this.cuentas.find((cuenta) => cuenta.id === id);
+
+    if (!cuenta) {
+      throw new NotFoundException('Cuenta no encontrada');
+    }
+
+    return cuenta;
   }
 
   findSaldo(id: number) {
     const saldo = this.cuentas.find((cuenta) => cuenta.id === id).saldo;
+
+    if (!saldo) {
+      throw new NotFoundException('Saldo no encontrado');
+    }
+
     return saldo;
   }
 
@@ -21,6 +36,10 @@ export class CuentasService {
     const movimientos = this.cuentas.find(
       (cuenta) => cuenta.id === id,
     ).movimientos;
+
+    if (!movimientos) {
+      throw new NotFoundException('Movimientos no encontrados');
+    }
 
     return movimientos;
   }
@@ -34,7 +53,7 @@ export class CuentasService {
     );
 
     if (!cuentaOrigenObj) {
-      return 'Cuenta origen no encontrada';
+      throw new NotFoundException('Cuenta origen no encontrada');
     }
 
     let cuentaDestinoObj;
@@ -45,7 +64,7 @@ export class CuentasService {
       );
 
       if (!cuentaDestinoObj) {
-        return 'Cuenta destino no encontrada';
+        throw new NotFoundException('Cuenta destino no encontrada');
       }
     } else {
       cuentaDestinoObj = this.cuentas.find(
@@ -54,7 +73,7 @@ export class CuentasService {
     }
 
     if (cuentaOrigenObj.saldo < monto) {
-      return 'Saldo insuficiente';
+      throw new ImATeapotException('Saldo insuficiente');
     }
 
     cuentaOrigenObj.saldo -= monto;
