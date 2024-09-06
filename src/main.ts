@@ -5,11 +5,12 @@ import { AppModule } from './app.module';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
+  app.setGlobalPrefix('api');
+
   const config = new DocumentBuilder()
-    .setTitle('ANDISBANK - CUENTAS')
-    .setDescription('API para el manejo de cuentas bancarias')
+    .setTitle('ANDISBANK - CUENTAS - REST API')
+    .setDescription('API para el manejo de cuentas bancarias.')
     .setVersion('1.0')
-    .addTag('cuentas')
     .build();
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api', app, document);

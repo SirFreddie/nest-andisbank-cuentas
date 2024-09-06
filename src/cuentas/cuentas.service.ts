@@ -1,15 +1,16 @@
 import {
-  ImATeapotException,
+  ForbiddenException,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
 import { CreateTransferenciaDto } from './dto/create-transferencia.dto';
 import { CUENTAS_ANDISBANK } from 'src/data/cuentas.mock';
 import { CUENTAS_BANCOS_EXTERNOS } from 'src/data/cuentas-otros';
+import { Cuenta } from './entities/cuenta.entity';
 
 @Injectable()
 export class CuentasService {
-  cuentas: any[] = CUENTAS_ANDISBANK;
+  cuentas: Cuenta[] = CUENTAS_ANDISBANK;
   cuentasExternas: any = CUENTAS_BANCOS_EXTERNOS;
 
   findOne(id: number) {
@@ -48,9 +49,7 @@ export class CuentasService {
     const { cuentaOrigen, cuentaDestino, monto, bancoDestino } =
       createTransferenciaDto;
 
-    const cuentaOrigenObj = this.cuentas.find(
-      (cuenta) => cuenta.id === cuentaOrigen,
-    );
+    const cuentaOrigenObj = this.findOne(cuentaOrigen);
 
     if (!cuentaOrigenObj) {
       throw new NotFoundException('Cuenta origen no encontrada');
@@ -73,7 +72,7 @@ export class CuentasService {
     }
 
     if (cuentaOrigenObj.saldo < monto) {
-      throw new ImATeapotException('Saldo insuficiente');
+      throw new ForbiddenException('Saldo insuficiente');
     }
 
     cuentaOrigenObj.saldo -= monto;
