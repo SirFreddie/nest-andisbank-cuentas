@@ -1,4 +1,14 @@
-import { PartialType } from '@nestjs/mapped-types';
-import { CreateCuentaDto } from './create-cuenta.dto';
+import { Field, InputType, Int } from '@nestjs/graphql';
+import { Movimiento } from '../entities/movimiento.entity';
 
-export class UpdateCuentaDto extends PartialType(CreateCuentaDto) {}
+@InputType() // Decorar la clase como un tipo de entrada
+export class UpdateCuentaDto {
+  @Field(() => Int)
+  id: number;
+
+  @Field({ nullable: true })
+  saldo?: number;
+
+  @Field(() => [Movimiento], { nullable: true }) // También marca 'movimientos' como opcional si es necesario
+  movimientos?: Movimiento[];
+}

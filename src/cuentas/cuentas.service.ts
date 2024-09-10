@@ -7,6 +7,8 @@ import { CreateTransferenciaDto } from './dto/create-transferencia.dto';
 import { CUENTAS_ANDISBANK } from 'src/data/cuentas.mock';
 import { CUENTAS_BANCOS_EXTERNOS } from 'src/data/cuentas-otros';
 import { Cuenta } from './entities/cuenta.entity';
+import { UpdateCuentaDto } from './dto/update-cuenta.dto';
+import { CreateCuentaDto } from './dto/create-cuenta.dto';
 
 @Injectable()
 export class CuentasService {
@@ -105,5 +107,45 @@ export class CuentasService {
 
   transferirExternos(transferirCuentaDto: CreateTransferenciaDto) {
     return this.transferirPropia(transferirCuentaDto);
+  }
+
+  create(createCuentaInput: CreateCuentaDto) {
+    const cuenta: Cuenta = {
+      id: this.cuentas.length + 1,
+      saldo: createCuentaInput.saldo,
+      movimientos: [],
+    };
+
+    this.cuentas.push(cuenta);
+  }
+
+  findAll() {
+    return this.cuentas;
+  }
+
+  update(id: number, updateCuentaInput: UpdateCuentaDto) {
+    const cuenta = this.findOne(id);
+
+    if (!cuenta) {
+      throw new NotFoundException('Cuenta no encontrada');
+    }
+
+    const index = this.cuentas.indexOf(cuenta);
+
+    this.cuentas[index] = { ...cuenta, ...updateCuentaInput };
+
+    return this.cuentas[index];
+  }
+
+  remove(id: number): Promise<void> {
+    const cuenta = this.findOne(id);
+
+    if (!cuenta) {
+      throw new NotFoundException('Cuenta no encontrada');
+    }
+
+    this.cuentas = this.cuentas.filter((cuenta) => cuenta.id !== id);
+
+    return;
   }
 }
