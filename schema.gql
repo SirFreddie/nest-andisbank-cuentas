@@ -2,28 +2,43 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
-type Graph {
-  """Example field (placeholder)"""
-  exampleField: Int!
+type Movimiento {
+  id: Int!
+  fecha: Float!
+  monto: Float!
+  tipo: String!
+}
+
+type Cuenta {
+  id: Int!
+  saldo: Float!
+  movimientos: [Movimiento!]!
 }
 
 type Query {
-  graph(id: Int!): Graph!
+  findAllCuentas: [Cuenta!]!
+  cuenta(id: Int!): Cuenta!
 }
 
 type Mutation {
-  createGraph(createGraphInput: CreateGraphInput!): Graph!
-  updateGraph(updateGraphInput: UpdateGraphInput!): Graph!
-  removeGraph(id: Int!): Graph!
+  createCuenta(createCuentaInput: CreateCuentaDto!): Cuenta!
+  updateCuenta(updateCuentaInput: UpdateCuentaDto!): Cuenta!
+  removeCuenta(id: Int!): Cuenta!
 }
 
-input CreateGraphInput {
-  """Example field (placeholder)"""
-  exampleField: Int!
+input CreateCuentaDto {
+  saldo: Float!
+  movimientos: [MovimientoInput!]!
 }
 
-input UpdateGraphInput {
-  """Example field (placeholder)"""
-  exampleField: Int
+input MovimientoInput {
+  fecha: Int!
+  monto: Float!
+  tipo: String!
+}
+
+input UpdateCuentaDto {
   id: Int!
+  saldo: Float
+  movimientos: [MovimientoInput!]
 }

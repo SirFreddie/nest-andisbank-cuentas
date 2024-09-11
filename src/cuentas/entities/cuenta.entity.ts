@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Movimiento, MovimientoInput } from './movimiento.entity';
-import { Field, Int, ObjectType, InputType } from '@nestjs/graphql';
+import { Field, Int, ObjectType, InputType, Float } from '@nestjs/graphql';
 
 @ObjectType()
 export class Cuenta {
@@ -19,11 +19,9 @@ export class Cuenta {
 
 @InputType()
 export class CreateCuentaDto {
-  @ApiProperty()
-  @Field()
+  @Field(() => Float)
   saldo: number;
 
-  @ApiProperty({ type: [MovimientoInput] })
   @Field(() => [MovimientoInput])
   movimientos: MovimientoInput[];
 }

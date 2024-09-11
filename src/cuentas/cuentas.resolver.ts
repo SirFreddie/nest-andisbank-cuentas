@@ -13,8 +13,8 @@ export class CuentasResolver {
     return this.cuentasService.create(createCuentaInput);
   }
 
-  @Query(() => [Cuenta], { name: 'cuentas' })
-  findAll() {
+  @Query(() => [Cuenta])
+  findAllCuentas(): Cuenta[] {
     return this.cuentasService.findAll();
   }
 

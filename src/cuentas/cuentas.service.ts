@@ -12,7 +12,7 @@ import { CreateCuentaDto } from './dto/create-cuenta.dto';
 
 @Injectable()
 export class CuentasService {
-  cuentas: Cuenta[] = CUENTAS_ANDISBANK;
+  cuentas: Cuenta[] = [...CUENTAS_ANDISBANK];
   cuentasExternas: any = CUENTAS_BANCOS_EXTERNOS;
 
   findOne(id: number) {
@@ -109,31 +109,44 @@ export class CuentasService {
     return this.transferirPropia(transferirCuentaDto);
   }
 
-  create(createCuentaInput: CreateCuentaDto) {
+  create(createCuentaInput: CreateCuentaDto): Cuenta {
     const cuenta: Cuenta = {
       id: this.cuentas.length + 1,
       saldo: createCuentaInput.saldo,
-      movimientos: [],
+      movimientos: createCuentaInput.movimientos.map((mov, index) => ({
+        ...mov,
+        id: index + 1,
+      })),
     };
-
     this.cuentas.push(cuenta);
+    return cuenta;
   }
 
   findAll() {
     return this.cuentas;
   }
 
-  update(id: number, updateCuentaInput: UpdateCuentaDto) {
-    const cuenta = this.findOne(id);
-
-    if (!cuenta) {
-      throw new NotFoundException('Cuenta no encontrada');
+  update(id: number, updateCuentaDto: UpdateCuentaDto): Cuenta {
+    const index = this.cuentas.findIndex((cuenta) => cuenta.id === id);
+    if (index === -1) {
+      throw new NotFoundException(`Cuenta with ID ${id} not found`);
     }
 
-    const index = this.cuentas.indexOf(cuenta);
+    const cuenta = this.cuentas[index];
+    const updatedMovimientos =
+      updateCuentaDto.movimientos?.map((mov) => ({
+        ...mov,
+        id:
+          cuenta.movimientos.find(
+            (m) => m.fecha === mov.fecha && m.tipo === mov.tipo,
+          )?.id || 0,
+      })) || cuenta.movimientos;
 
-    this.cuentas[index] = { ...cuenta, ...updateCuentaInput };
-
+    this.cuentas[index] = {
+      ...cuenta,
+      ...updateCuentaDto,
+      movimientos: updatedMovimientos,
+    };
     return this.cuentas[index];
   }
 

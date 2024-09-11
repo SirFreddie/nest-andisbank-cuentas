@@ -1,7 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { Field, Int, ObjectType, InputType } from '@nestjs/graphql';
+import { Field, Int, ObjectType, InputType, Float } from '@nestjs/graphql';
 
-// Decorador para los datos de salida
 @ObjectType()
 export class Movimiento {
   @ApiProperty()
@@ -21,7 +20,6 @@ export class Movimiento {
   tipo: string;
 }
 
-// Decorador para los datos de entrada
 @InputType()
 export class MovimientoInput {
   @ApiProperty()
@@ -29,7 +27,7 @@ export class MovimientoInput {
   fecha: number;
 
   @ApiProperty()
-  @Field()
+  @Field(() => Float)
   monto: number;
 
   @ApiProperty()
